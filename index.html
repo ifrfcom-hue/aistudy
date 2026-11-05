@@ -6,7 +6,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>라파샘의 인기초 실습실</title>
+<title>라파쌤의 인기초 실습실</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -73,6 +73,10 @@ h1,h2,h3{text-wrap:balance}
 .hero-cta{display:flex;flex-wrap:wrap;gap:10px}
 .cta{font:inherit;font-weight:700;font-size:15px;padding:11px 18px;border-radius:4px;text-decoration:none;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);box-shadow:0 0 22px rgba(0,229,255,.35)}
 .cta.ghost{background:transparent;color:var(--accent);box-shadow:none}
+.cta.ghost.mag{color:var(--mag);border-color:var(--mag)}
+.cta:hover{filter:brightness(1.15)}
+.cta.ghost:hover{background:rgba(0,229,255,.08);box-shadow:0 0 16px -4px var(--accent)}
+.cta.ghost.mag:hover{background:rgba(255,43,214,.08);box-shadow:0 0 16px -4px var(--mag)}
 @media (max-width:680px){.hero{min-height:520px;align-items:flex-end}.hero::after{background:linear-gradient(0deg,rgba(3,8,18,.96) 0%,rgba(3,8,18,.72) 52%,rgba(3,8,18,.05) 100%)}.hero-text{padding:26px 20px}}
 /* units on home */
 .unit{display:flex;flex-direction:column;gap:12px}
@@ -366,9 +370,9 @@ pre.matrix{margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.5;col
 
 <header class="topbar">
   <div class="topbar-in">
-    <a class="brand" href="#home" aria-label="라파샘의 인기초 실습실 첫 화면">
+    <a class="brand" href="#home" aria-label="라파쌤의 인기초 실습실 첫 화면">
       <svg class="logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" aria-hidden="true" style="color:var(--accent)"><path d="M16 2l12 7v14l-12 7-12-7V9z" stroke-width="1.5"/><circle cx="16" cy="16" r="3.2" fill="currentColor"/><path d="M16 12.8V7M16 19.2V25M13.2 14.4l-5-2.9M18.8 17.6l5 2.9M13.2 17.6l-5 2.9M18.8 14.4l5-2.9" stroke-width="1.3"/></svg>
-      <span><span class="nm">라파샘의 <b>인기초</b> 실습실</span><span class="sub">AI BASICS · NEURAL LAB</span></span>
+      <span><span class="nm">라파쌤의 <b>인기초</b> 실습실</span><span class="sub">AI BASICS · NEURAL LAB</span></span>
     </a>
     <nav class="navlinks" aria-label="주요 화면">
       <a href="#home" data-nav="home">수업 목록</a>
@@ -2122,10 +2126,10 @@ function renderHome(){
   const v=$('#v-home');const p=prof();
   v.innerHTML='<div class="hero"><canvas id="cv-hero" aria-hidden="true"></canvas><div class="hero-text">'+
    '<span class="eyebrow">// NEURAL CORE ONLINE</span>'+
-   '<h1>라파샘의 <span class="glitch" data-t="인기초">인기초</span> 실습실</h1>'+
+   '<h1>라파쌤의 <span class="glitch" data-t="인기초">인기초</span> 실습실</h1>'+
    '<p>인공지능 기초 5개 단원 '+LESSONS.length+'차시. 수준별 활동과 미니레슨으로 점수를 쌓고, AI 분석실에서 나의 강점과 약점을 확인하세요.</p>'+
    '<div class="hud-line">SYS <b>●</b> ACTIVE · UNITS 05 · LESSONS '+LESSONS.length+' · ACTIVITIES '+TOTAL_ACTS+' · QUIZ '+QB.length+'</div>'+
-   '<div class="hero-cta"><a class="cta" href="#l1-1">첫 차시 시작하기</a><a class="cta ghost" href="#analysis">AI 분석실</a></div></div>'+learnPanel()+'</div>'+
+   '<div class="hero-cta"><a class="cta" href="#l1-1">첫 차시 시작하기</a><a class="cta ghost mag" href="#analysis">AI 분석실</a></div></div>'+learnPanel()+'</div>'+
    UNITS.map(u=>{const ls=LESSONS.filter(l=>l.u===u.no);const us=unitStat(u.no);
     return '<section class="unit" style="--uc:var(--'+u.c+')"><div class="unit-head"><span class="unit-no">UNIT 0'+u.no+'</span><h2>'+u.title+'</h2>'+(p?'<span class="usc">'+us.e+' / '+us.m+' P</span>':'')+'</div><div class="lessons">'+
      ls.map((l,i)=>{const dots=l.acts.map((_,lv)=>'<i class="'+(p&&p.acts[l.id+':'+lv]?'on':'')+'"></i>').join('');
@@ -2152,7 +2156,7 @@ function renderLearn(){const b=$('#learn-body');if(!b)return;const M=getModel(),
   if(LSTEP===2){b.innerHTML='<h3>③ 학습</h3><p>그림을 보고 <b>예측 → 정답과 비교 → 틀린 만큼 가중치 수정</b>을 '+M.log.length+'번(에포크) 반복했어요. 사람이 규칙을 쓰지 않고 가중치 <b>'+f(P)+'개</b>를 스스로 조정했어요.</p>'+accSvg(130);}
   if(LSTEP===3){b.innerHTML='<h3>④ 평가</h3><div class="row" style="gap:14px;align-items:center"><span class="bigacc">'+M.acc+'%</span><p style="flex:1;min-width:150px">한 번도 보지 못한 시험용 <b>'+f(M.ntest)+'장</b>으로 잰 정확도예요.</p></div><p>학습할 때 그림을 기울이고, 늘리고, 굵게 바꾸는 <b>데이터 증강</b>으로 연습해서 여러분의 다양한 손글씨도 잘 알아봐요.</p>';}
   if(LSTEP===4){b.innerHTML='<h3>⑤ 활용</h3><p>이제 AI가 <b>처음 보는 새 손글씨</b>를 인식할 수 있어요. 여러분이 그린 숫자가 입력층 784개 → 은닉층 64개 → 은닉층 32개 → 출력층 10개를 거쳐 판단되는 과정을 3D로 볼 수 있어요.</p><a class="cta" href="#l3-8" style="align-self:flex-start;font-size:14px;padding:9px 14px">3-8 글자 분류에서 직접 그려 보기 →</a>';}}
-function bindLearn(){const box=$('.learn');if(!box)return;box.querySelector('.lsteps').onclick=e=>{const t=e.target.closest('[data-ls]');if(!t)return;LSTEP=+t.dataset.ls;renderLearn();};
+function bindLearn(){const hb=$('#hero-learn');if(hb)hb.onclick=openLearnModal;const box=$('.learn');if(!box)return;box.querySelector('.lsteps').onclick=e=>{const t=e.target.closest('[data-ls]');if(!t)return;LSTEP=+t.dataset.ls;renderLearn();};
   $('#learn-prev').onclick=()=>{LSTEP=(LSTEP+4)%5;renderLearn();};$('#learn-next').onclick=()=>{LSTEP=(LSTEP+1)%5;renderLearn();};$('#learn-more').onclick=openLearnModal;renderLearn();}
 function openLearnModal(){const M=getModel(),f=n=>n.toLocaleString('ko-KR'),m=$('#learn-modal');
   m.querySelector('.lm-body').innerHTML='<div class="dg-pipe"><div><b>① 데이터 수집</b><span>MNIST: 사람들이 쓴 손글씨 숫자 이미지 '+f(M.ntrain+M.ntest)+'장과 정답(레이블)</span></div><div><b>② 데이터 준비</b><span>모든 그림을 28×28 흑백으로 맞추고 학습용 '+f(M.ntrain)+'장 / 시험용 '+f(M.ntest)+'장으로 나눔</span></div><div><b>③ 학습</b><span>예측 → 정답과 비교 → 틀린 만큼 가중치를 조금씩 수정 (반복)</span></div><div><b>④ 평가</b><span>한 번도 못 본 시험용 그림으로 정확도 측정: <b>'+M.acc+'%</b></span></div><div><b>⑤ 활용</b><span>새로 그린 숫자를 인식 (새로운 데이터에 적용)</span></div></div>'+
