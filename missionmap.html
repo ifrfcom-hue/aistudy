@@ -212,6 +212,16 @@ textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8
 .rspanel summary{cursor:pointer;padding:2px 0}
 .rsrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
 .rsrow .btn{white-space:nowrap}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:10px}
+.pcard{border:1.5px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--paper)}
+.pcard.done{border-color:var(--ok)}
+.pcard .sh{display:flex;align-items:center;gap:8px}.pcard .sh .no{font-family:var(--f-display);font-size:20px}.pcard .sh .pill{margin-left:auto}
+.pcard .mini{max-height:120px;object-fit:contain}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border-top:1px dashed var(--line);padding-top:6px}
+.tiny{font-size:11px;line-height:1.3}
+.pbtns{display:flex;gap:3px}
+.pbtns button{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-weight:700}
+.pbtns button[aria-pressed="true"]{background:var(--navy);color:var(--paper);border-color:var(--navy)}
 .tround{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
 .tround.now{border-color:var(--yellow);box-shadow:0 0 0 2px color-mix(in srgb,var(--yellow) 40%,transparent)}
 .tround.future{border-style:dashed;opacity:.75}
@@ -222,7 +232,7 @@ textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8
 .brow .rk{font-family:var(--f-display);font-size:30px;text-align:center}
 .brow .tm{display:flex;flex-direction:column}.brow .tm b{font-family:var(--f-display);font-weight:400;font-size:24px}
 .brow .bar{position:relative;height:26px;background:var(--chip);border-radius:8px;overflow:hidden}
-.brow .bar span{position:absolute;inset:0 auto 0 0;background:var(--mint);border-radius:8px;transition:width .5s}
+.brow .bar span{position:absolute;inset:0 auto 0 0;background:var(--mint);border-radius:8px 0 0 8px;transition:width .5s,left .5s}.brow .bar span.pe{background:#F5B301;border-radius:0 8px 8px 0}.brow .bar em small{font-weight:500;opacity:.8}
 .brow .bar em{position:absolute;left:10px;top:3px;font-style:normal;font-weight:700;color:var(--ink);text-shadow:0 0 3px var(--paper)}
 .brow .tt{font-size:22px;font-weight:600;display:flex;flex-direction:column;line-height:1.1}.brow .tt small{font-family:var(--f-body);font-size:11px;color:var(--ink-2);font-weight:400}
 @media (max-width:640px){.brow{grid-template-columns:36px 1fr 1fr}.brow .bar{grid-column:1/-1;order:5}.brow .sf{grid-column:2/-1}}
@@ -264,6 +274,7 @@ textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8
     <div class="modes" role="group" aria-label="모드">
       <button id="modeDesign" aria-pressed="true">설계 모드</button>
       <button id="modePlay" aria-pressed="false">미션 교환 플레이</button>
+      <button id="modePeer" aria-pressed="false">상호평가</button>
       <button id="modeTeams" aria-pressed="false">조편성</button>
       <button id="modeScore" aria-pressed="false">점수 현황판</button>
     </div>
@@ -852,7 +863,7 @@ const TABS_PLAY = [
 ];
 const tabsEl=document.getElementById("tabs"), panel=document.getElementById("panel");
 function renderTabs(){
-  if((mode==="play" && !play) || mode==="teams" || mode==="score"){ tabsEl.innerHTML=""; return; }
+  if((mode==="play" && !play) || mode==="teams" || mode==="score" || mode==="peer"){ tabsEl.innerHTML=""; return; }
   const list = mode==="play"? (play&&play.game? TABS_PLAY.filter(x=>x.id===play.game.mission) : TABS_PLAY): TABS_DESIGN;
   if(!list.find(x=>x.id===tab)) tab=list[0].id;
   tabsEl.innerHTML = list.map(x=>`<button role="tab" aria-selected="${x.id===tab}" data-tab="${x.id}">${x.c?`<span class="dot" style="background:${COLORS[x.c]}"></span>`:""}${x.t}</button>`).join("");
@@ -866,6 +877,7 @@ const sumExpr = (m,p,extra) => { if(!p) return ""; const ws=[]; for(let i=1;i<p.
 function renderPanel(){
   if(mode==="play") return renderPlayPanel();
   if((mode==="teams"||mode==="score") && !isAdmin){ panel.innerHTML=lockedHTML(mode==="teams"?"조편성 현황":"점수 현황판"); document.getElementById("admLogin").onclick=()=>adminDialog(); return; }
+  if(mode==="peer"){ panel.innerHTML=peerHTML(); wirePeer(); return; }
   if(mode==="teams"){ panel.innerHTML=teamsHTML(); wireViews(); return; }
   if(mode==="score"){ panel.innerHTML=scoreHTML(); wireViews(); return; }
   const m=S, R=analyze(m);
@@ -1050,14 +1062,15 @@ let resetArm = false;
 let scoreCfg = {succ:10, fail:3, penalty:60};
 const LOCAL_BOARD = "crr-board-v2";
 
-function loadLocalBoard(){ try{ const o=JSON.parse(localStorage.getItem(LOCAL_BOARD)||"{}"); boardMaps=o.maps||{}; game=o.game||null; results=o.results||{}; }catch(e){ boardMaps={}; game=null; results={}; } }
-function saveLocalBoard(){ try{ localStorage.setItem(LOCAL_BOARD, JSON.stringify({maps:boardMaps, game, results})); }catch(e){} }
-function refreshBoard(){ updateSendBtn(); if((mode==="play" && (!play || play.game)) || mode==="teams" || mode==="score") renderPanel(); if(mode==="play") renderTabs(); }
+function loadLocalBoard(){ try{ const o=JSON.parse(localStorage.getItem(LOCAL_BOARD)||"{}"); boardMaps=o.maps||{}; game=o.game||null; results=o.results||{}; peer=o.peer||{}; }catch(e){ boardMaps={}; game=null; results={}; peer={}; } }
+function saveLocalBoard(){ try{ localStorage.setItem(LOCAL_BOARD, JSON.stringify({maps:boardMaps, game, results, peer})); }catch(e){} }
+function refreshBoard(){ updateSendBtn(); if((mode==="play" && (!play || play.game)) || mode==="teams" || mode==="score" || mode==="peer") renderPanel(); if(mode==="play") renderTabs(); }
 function applyDoc(path, data){
   const [c,id]=path.split("/");
   if(c==="maps"){ const k=id.slice(1); if(data) boardMaps[k]=data; else delete boardMaps[k]; }
   else if(c==="class"){ game=data||null; }
   else if(c==="results"){ if(data) results[id]=data; else delete results[id]; }
+  else if(c==="peer"){ if(data) peer[id]=data; else delete peer[id]; }
 }
 async function put(path, data){
   if(DB){ try{ await DB.doc(path).set(data); }catch(e){ toast(e&&e.code==="invalid_argument"? "보드에 쓸 권한이 없어요. 선생님께 링크 권한(참여 가능)을 확인하세요":"저장하지 못했어요. 잠시 뒤 다시 눌러 주세요"); return false; } }
@@ -1072,7 +1085,7 @@ async function initDB(){
   let db=null;
   try{ db = window.claude && window.claude.use ? await window.claude.use("db") : null; }catch(e){ db=null; }
   if(!db){ dbState="local"; refreshBoard(); return; }
-  DB=db; boardMaps={}; game=null; results={};
+  DB=db; boardMaps={}; game=null; results={}; peer={};
   const fallback=()=>{ dbState="local"; DB=null; loadLocalBoard(); refreshBoard(); };
   const timer=setTimeout(()=>{ if(dbState==="connecting") fallback(); },10000);
   try{
@@ -1082,6 +1095,7 @@ async function initDB(){
       if(!firstGame && game && game.status==="playing" && k!==lastRoundKey) showShuffle(game, game.round);
       lastRoundKey=k; firstGame=false; refreshBoard(); }, ()=>{});
     DB.collection("results").onSnapshot(snap=>{ const o={}; snap.docs.forEach(d=>o[d.id]=d.data()); results=o; refreshBoard(); }, ()=>{});
+    DB.collection("peer").onSnapshot(snap=>{ const o={}; snap.docs.forEach(d=>o[d.id]=d.data()); peer=o; refreshBoard(); }, ()=>{});
   }catch(e){ clearTimeout(timer); fallback(); }
 }
 
@@ -1160,6 +1174,7 @@ const RESETS = {
   scores:{t:"점수 초기화", d:"모든 조의 미션 기록·점수·시간을 지우고 라운드 1부터 다시 해요. 조편성은 그대로예요.", need:"game"},
   teams: {t:"조편성 초기화", d:"미션조를 새로 섞어요. 점수도 함께 지워지고 라운드 1부터 시작해요.", need:"game"},
   game:  {t:"게임 초기화", d:"게임·조편성·점수를 모두 지우고 준비 화면으로 돌아가요. 등록된 지도는 남아요.", need:"game"},
+  peer:  {t:"상호평가 초기화", d:"모든 조의 상호평가 점수를 지워요. 미션 점수와 조편성은 그대로예요.", need:"any"},
   maps:  {t:"조별 지도 초기화", d:"1~5조에 등록된 지도(조 이름·지도)를 모두 지워요. 게임이 없을 때만 할 수 있어요.", need:"nogame"},
 };
 async function clearResults(){ for(const id of Object.keys(results)) await del("results/"+id); }
@@ -1184,6 +1199,8 @@ async function doReset(kind){
     if(await put("class/game", ng)){ toast("조편성을 새로 섞었어요"); showShuffle(ng,1); }
   } else if(kind==="game"){
     await clearResults(); await del("class/game"); toast("게임을 초기화했어요. 등록된 지도는 그대로예요");
+  } else if(kind==="peer"){
+    for(const id of Object.keys(peer)) await del("peer/"+id); toast("상호평가 점수를 지웠어요");
   } else if(kind==="maps"){
     if(hasGame){ toast("게임이 진행 중이에요. 게임 초기화를 먼저 하세요"); refreshBoard(); return; }
     for(const k of SLOT_IDS) if(boardMaps[k]) await del("maps/t"+k);
@@ -1195,10 +1212,10 @@ async function resetGame(){ return doReset("game"); }
 function resetPanelHTML(){
   if(!isAdmin) return "";
   const hasGame = game && game.status!=="setup";
-  const btn=k=>{ const R=RESETS[k], on = R.need==="game"? hasGame : !hasGame; const armed=resetArm===k;
+  const btn=k=>{ const R=RESETS[k], on = R.need==="any"? true : R.need==="game"? hasGame : !hasGame; const armed=resetArm===k;
     return `<div class="rsrow"><div><b>${R.t}</b><div class="small muted">${R.d}</div></div><button class="btn ${armed?"coral":""}" data-reset="${k}" ${on?"":"disabled"}>${armed?"한 번 더 누르면 실행":R.t}</button></div>`; };
-  return `<details class="rspanel" ${resetArm?"open":""}><summary><b>관리자 초기화</b> <span class="small muted">점수 · 조편성 · 게임 · 조별 지도</span></summary>
-    ${btn("scores")}${btn("teams")}${btn("game")}${btn("maps")}
+  return `<details class="rspanel" ${resetArm?"open":""}><summary><b>관리자 초기화</b> <span class="small muted">점수 · 상호평가 · 조편성 · 게임 · 조별 지도</span></summary>
+    ${btn("scores")}${btn("peer")}${btn("teams")}${btn("game")}${btn("maps")}
     <p class="small muted" style="margin:6px 0 0">실수 방지를 위해 버튼을 두 번 눌러야 실행돼요. 지운 기록은 되돌릴 수 없어요.</p></details>`;
 }
 function wireResets(){ panel.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>doReset(b.dataset.reset)); }
@@ -1207,8 +1224,9 @@ function standings(g){
   const rows=g.teams.map(t=>{ let pts=0, succ=0, fail=0, ms=0, done=0;
     for(let r=1;r<=g.rounds;r++){ const x=results[rid(r,t)]; if(!x||(x.state!=="success"&&x.state!=="fail")) continue; done++;
       if(x.state==="success"){ succ++; pts+=sc.succ; ms+=x.timeMs; } else { fail++; pts+=sc.fail; ms+=x.timeMs+sc.penalty*1000; } }
-    return {t, pts, succ, fail, ms, done}; });
-  rows.sort((a,b)=> b.done-a.done || a.ms-b.ms || b.pts-a.pts);
+    const pa=peerAvg(t), pe=Math.round(pa.avg*10)/10;
+    return {t, pts, succ, fail, ms, done, peer:pe, peerN:pa.n, total:Math.round((pts+pe)*10)/10}; });
+  rows.sort((a,b)=> b.total-a.total || (b.done-a.done) || a.ms-b.ms);
   return rows;
 }
 const fmtT2 = ms => { const t=Math.max(0,ms)/1000; return `${Math.floor(t/60)}:${(t%60).toFixed(1).padStart(4,"0")}`; };
@@ -1308,18 +1326,18 @@ function scoreHTML(){
     return h+shareBox("scoreboard","점수 현황판");
   }
   const g=game, rows=standings(g), sc=g.scoring;
-  if(g.status==="done"){ const w=rows[0];
-    h+=`<div class="answer" style="border:2px solid #F5B301;background:color-mix(in srgb,#F5B301 14%,transparent);text-align:center"><div class="small">최종 우승 · 누적 해결 시간 최단</div><div style="font-family:var(--f-display);font-size:40px">${w.t}조 🏆</div><div>${g.names?.[w.t]? esc(g.names[w.t])+" · ":""}<b class="mono">${fmtT2(w.ms)}</b> · ${w.pts}점</div></div>`; }
+  if(g.status==="done"){ const w=rows[0], f=fastest(rows);
+    h+=`<div class="answer" style="border:2px solid #F5B301;background:color-mix(in srgb,#F5B301 14%,transparent);text-align:center"><div class="small">종합 우승 · 미션 점수 + 상호평가</div><div style="font-family:var(--f-display);font-size:40px">${w.t}조 🏆</div><div>${(boardMaps[w.t]?.name||g.names?.[w.t])? esc(boardMaps[w.t]?.name||g.names[w.t])+" · ":""}총점 <b class="mono">${w.total}</b>점 (미션 ${w.pts} + 평가 ${w.peer.toFixed(1)})</div>${f?`<div class="small" style="margin-top:4px">⏱ 최단 해결 시간 · <b>${f.t}조</b> ${fmtT2(f.ms)}</div>`:""}</div>`; }
   else { const doneN=g.teams.filter(t=>{ const x=results[rid(g.round,t)]; return x&&x.state!=="playing"; }).length;
     h+=`<p style="margin:6px 0"><b>라운드 ${g.round} / ${g.rounds}</b> 진행 중 · 미션 완료 ${doneN} / ${g.teams.length}조</p>`; }
-  const maxPts=Math.max(1,...rows.map(r=>r.pts));
+  const maxPts=Math.max(1,...rows.map(r=>r.total));
   h+=`<div class="bigboard">${rows.map((r,i)=>{ const live = g.status!=="done"? results[rid(g.round,r.t)] : null;
-    return `<div class="brow ${+r.t===mySlot?"mine":""} ${i===0&&r.done?"lead":""}"><div class="rk">${r.done? i+1:"–"}</div>
+    return `<div class="brow ${+r.t===mySlot?"mine":""} ${i===0&&r.total>0?"lead":""}"><div class="rk">${i+1}</div>
       <div class="tm"><b>${r.t}조</b><span class="small muted">${esc((boardMaps[r.t]?.name||g.names?.[r.t])||"")}</span></div>
-      <div class="bar"><span style="width:${r.pts/maxPts*100}%"></span><em>${r.pts}점</em></div>
+      <div class="bar"><span style="width:${r.pts/maxPts*100}%"></span><span class="pe" style="left:${r.pts/maxPts*100}%;width:${r.peer/maxPts*100}%"></span><em>${r.total}점 <small>= 미션 ${r.pts} + 평가 ${r.peerN? r.peer.toFixed(1):"0"}</small></em></div>
       <div class="tt mono">${r.done? fmtT2(r.ms):"—"}<small>누적 해결 시간</small></div>
       <div class="sf small">성공 ${r.succ} · 실패 ${r.fail}${live&&g.status!=="done"? `<br>${resPill(live)}`:""}</div></div>`; }).join("")}</div>
-  <p class="small muted">순위: 끝낸 미션 수 → 누적 해결 시간(짧을수록) → 점수 · 성공 ${sc.succ}점 · 실패 ${sc.fail}점 · 실패 벌칙 ${sc.penalty}초</p>
+  <p class="small muted"><span class="dot" style="background:var(--mint)"></span> 미션 점수(성공 ${sc.succ}점 · 실패 ${sc.fail}점) <span class="dot" style="background:#F5B301"></span> 상호평가 평균(15점 만점) · 총점이 같으면 누적 해결 시간이 짧은 조가 앞서요</p>
   <h3>라운드별 기록</h3>${roundsMatrix(g)}`;
   return h+resetPanelHTML()+shareBox("scoreboard","점수 현황판");
 }
@@ -1391,6 +1409,51 @@ function gameStudentHTML(){
   <div class="btnrow"><button class="btn" id="replayShuf">조 섞기 화면 보기</button></div>`;
 }
 
+/* ---------- 상호평가 ---------- */
+const PEER_CRIT = [
+  {k:"graph",    t:"그래프 표현", q:"장소·도로·길이·h를 정확한 그래프로 표현했나", r5:"빠짐없고 h ≤ 도로 최단", r3:"한두 곳 빠지거나 틀림", r1:"그래프로 읽기 어려움"},
+  {k:"creative", t:"미션의 창의성", q:"우리 학교의 실제 문제와 함정이 살아 있나", r5:"실제 학교 문제·함정이 살아 있음", r3:"지도는 있으나 함정이 약함", r1:"예시 맵을 거의 그대로 씀"},
+  {k:"explain",  t:"설명의 정확성", q:"차수·홀수 점·해밀턴·g + h로 의도를 정확히 설명했나", r5:"그래프 용어로 정확히 설명", r3:"용어 없이 결과만 말함", r1:"무엇을 설계했는지 알기 어려움"},
+];
+let peer = {};   // "e{from}-t{to}" -> {from,to,graph,creative,explain,at}
+const pid = (f,t)=>`e${f}-t${t}`;
+const peerSum = d => PEER_CRIT.reduce((s,c)=>s+(+d[c.k]||0),0);
+const peerDone = d => d && PEER_CRIT.every(c=>+d[c.k]>=1);
+function peerTeams(){ return (game&&game.teams&&game.status!=="setup")? game.teams.slice() : SLOT_IDS.filter(k=>boardMaps[k]); }
+function peerAvg(t){ const xs=Object.values(peer).filter(d=>d.to===String(t)&&d.from!==String(t)&&peerDone(d)); if(!xs.length) return {avg:0,n:0}; return {avg: xs.reduce((s,d)=>s+peerSum(d),0)/xs.length, n:xs.length}; }
+async function setPeer(to, crit, val){
+  const me=String(mySlot); if(me===String(to)){ toast("우리 조는 평가할 수 없어요"); return; }
+  const cur=peer[pid(me,to)]||{from:me,to:String(to)};
+  const d={...cur, from:me, to:String(to), [crit]:val, at:Date.now()};
+  peer[pid(me,to)]=d; renderPanel();
+  await put("peer/"+pid(me,to), d);
+}
+function peerHTML(){
+  const teams=peerTeams(), me=String(mySlot), targets=teams.filter(t=>t!==me);
+  let h=`<div class="playhead"><h2 style="margin:0">상호평가</h2><span class="small">${stLine()}</span></div>
+  <p class="small">평가하는 조: <b>${mySlot}조</b>${boardMaps[me]?.name? ` 「${esc(boardMaps[me].name)}」`:""} · 오른쪽 위 <b>우리 조</b>가 맞는지 확인하세요. 발표를 듣고 다른 조를 항목마다 1~5점으로 눌러요 (합계 15점). 누르면 바로 저장되고, 발표가 끝날 때까지 고칠 수 있어요.</p>`;
+  if(!targets.length) return h+`<div class="answer">평가할 조가 아직 없어요. 조별 지도가 전송되면 여기에 나타나요.</div>`+(isAdmin? peerAdminHTML(teams):"");
+  const doneN=targets.filter(t=>peerDone(peer[pid(me,t)])).length;
+  h+=`<div class="meter" aria-hidden="true"><span style="width:${doneN/targets.length*100}%"></span></div><p class="small"><b>${doneN}</b> / ${targets.length}개 조 평가 완료</p>
+  <details class="small"><summary>점수 기준 보기</summary><div class="tbl-wrap"><table><thead><tr><th>항목</th><th>5점</th><th>3점</th><th>1점</th></tr></thead><tbody>${PEER_CRIT.map(c=>`<tr><td><b>${c.t}</b></td><td>${c.r5}</td><td>${c.r3}</td><td>${c.r1}</td></tr>`).join("")}</tbody></table></div></details>
+  <div class="pgrid">`;
+  targets.forEach(t=>{ const d=peer[pid(me,t)]||{}, bm=boardMaps[t];
+    h+=`<div class="pcard ${peerDone(d)?"done":""}"><div class="sh"><span class="no">${t}조</span><span class="small muted">${esc(bm?.name||"")}</span><span class="pill ${peerDone(d)?"ok":""}">${peerSum(d)} / 15</span></div>
+      ${bm? miniMap(bm.code):""}
+      ${PEER_CRIT.map(c=>`<div class="prow"><div><b class="small">${c.t}</b><div class="tiny muted">${c.q}</div></div><div class="pbtns" role="group" aria-label="${t}조 ${c.t}">${[1,2,3,4,5].map(v=>`<button data-pe="${t}|${c.k}|${v}" aria-pressed="${+d[c.k]===v}">${v}</button>`).join("")}</div></div>`).join("")}
+    </div>`; });
+  h+=`</div>`;
+  if(isAdmin) h+=peerAdminHTML(teams);
+  return h;
+}
+function peerAdminHTML(teams){
+  if(!teams.length) return "";
+  const rows=teams.map(t=>{ const a=peerAvg(t); return `<tr><td><b>${t}조</b> <span class="small muted">${esc(boardMaps[t]?.name||"")}</span></td>${teams.map(f=>{ if(f===t) return `<td class="muted">—</td>`; const d=peer[pid(f,t)]; return `<td class="mono">${peerDone(d)? peerSum(d) : (d? `<span class="muted">${peerSum(d)}…</span>`:"·")}</td>`; }).join("")}<td class="mono"><b>${a.n? a.avg.toFixed(1):"—"}</b></td><td class="mono">${a.n}</td></tr>`; }).join("");
+  return `<h3>상호평가 집계 (관리자)</h3><div class="tbl-wrap"><table><thead><tr><th>받는 조 \\ 평가한 조</th>${teams.map(f=>`<th>${f}조</th>`).join("")}<th>평균 /15</th><th>평가 수</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="small muted">평균은 세 항목을 모두 누른 평가만 계산해요. 평균 점수가 점수 현황판의 총점에 더해져요. 한 기기에서 대신 입력할 때는 위쪽 '우리 조'를 평가하는 조로 바꿔 가며 누르세요.</p>`;
+}
+function wirePeer(){ panel.querySelectorAll("[data-pe]").forEach(b=>b.onclick=()=>{ const [t,c,v]=b.dataset.pe.split("|"); setPeer(t,c,+v); }); }
+
 /* 보드 화면 */
 function stLine(){ return dbState==="shared"? `<span class="pill ok">교실 공유 중</span> 모든 기기에서 같은 보드가 보여요`
   : dbState==="connecting"? `<span class="pill">연결 중…</span>` : `<span class="pill warn">이 기기에서 진행</span> 코드를 이 화면에 모아 한 기기에서 게임을 진행해요`; }
@@ -1416,9 +1479,10 @@ function setupHTML(){
 }
 function leaderHTML(g, final){
   const rows=standings(g);
-  return `<div class="tbl-wrap"><table><thead><tr><th>순위</th><th>조</th><th>누적 해결 시간</th><th>누적 점수</th><th>성공/실패</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="${+r.t===mySlot?"mine":""}"><td class="mono">${r.done? i+1 : "—"}${final&&i===0?" 🏆":""}</td><td><b>${r.t}조</b> <span class="small muted">${esc((boardMaps[r.t]?.name||g.names?.[r.t])||"")}</span></td><td class="mono">${r.done? fmtT2(r.ms):"—"}</td><td class="mono"><b>${r.pts}</b>점</td><td class="mono">${r.succ} / ${r.fail}</td></tr>`).join("")}</tbody></table></div>
-  <p class="small muted">순위: 끝낸 미션 수 → 누적 해결 시간(짧을수록) → 점수. 성공 ${g.scoring.succ}점 · 실패 ${g.scoring.fail}점 · 실패 벌칙 ${g.scoring.penalty}초</p>`;
+  return `<div class="tbl-wrap"><table><thead><tr><th>순위</th><th>조</th><th>총점</th><th>미션 점수</th><th>상호평가 /15</th><th>누적 해결 시간</th><th>성공/실패</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="${+r.t===mySlot?"mine":""}"><td class="mono">${i+1}${final&&i===0?" 🏆":""}</td><td><b>${r.t}조</b> <span class="small muted">${esc((boardMaps[r.t]?.name||g.names?.[r.t])||"")}</span></td><td class="mono"><b>${r.total}</b>점</td><td class="mono">${r.pts}</td><td class="mono">${r.peerN? r.peer.toFixed(1):"—"} <span class="small muted">(${r.peerN}개 조)</span></td><td class="mono">${r.done? fmtT2(r.ms):"—"}</td><td class="mono">${r.succ} / ${r.fail}</td></tr>`).join("")}</tbody></table></div>
+  <p class="small muted">총점 = 미션 점수(성공 ${g.scoring.succ}점 · 실패 ${g.scoring.fail}점) + 상호평가 평균(15점 만점). 같으면 누적 해결 시간이 짧은 조가 앞서요.</p>`;
 }
+function fastest(rows){ const xs=rows.filter(r=>r.done); return xs.length? xs.slice().sort((a,b)=>a.ms-b.ms)[0] : null; }
 function gameHTML(){
   if(!isAdmin) return gameStudentHTML();
   const g=game, r=g.round, sch=g.schedule[r-1];
@@ -1426,8 +1490,9 @@ function gameHTML(){
     const rows=standings(g), w=rows[0];
     return `<h2>명예의 전당 · 최종 결과</h2>
     <div class="answer" style="border:2px solid #F5B301;background:color-mix(in srgb,#F5B301 14%,transparent);text-align:center">
-      <div class="small">우승 · 누적 해결 시간 최단</div><div style="font-family:var(--f-display);font-size:34px">${w.t}조 🏆</div>
-      <div>${g.names?.[w.t]? esc(g.names[w.t])+" · ":""}누적 해결 시간 <b class="mono">${fmtT2(w.ms)}</b> · ${w.pts}점 · 성공 ${w.succ}</div></div>
+      <div class="small">종합 우승 · 미션 점수 + 상호평가</div><div style="font-family:var(--f-display);font-size:34px">${w.t}조 🏆</div>
+      <div>${(boardMaps[w.t]?.name||g.names?.[w.t])? esc(boardMaps[w.t]?.name||g.names[w.t])+" · ":""}총점 <b class="mono">${w.total}</b>점 (미션 ${w.pts} + 평가 ${w.peer.toFixed(1)})</div>
+      ${fastest(rows)? `<div class="small" style="margin-top:4px">⏱ 최단 해결 시간 · <b>${fastest(rows).t}조</b> ${fmtT2(fastest(rows).ms)}</div>`:""}</div>
     <h3>최종 순위</h3>${leaderHTML(g,true)}
     <h3>라운드별 기록</h3>${roundsMatrix(g)}
     ${resetPanelHTML()}`;
@@ -1731,13 +1796,13 @@ slotEl.addEventListener("change",()=>{ const k=+slotEl.value; try{ localStorage.
 document.getElementById("sendBtn").onclick=sendMine;
 const teamEl=document.getElementById("teamName");
 teamEl.addEventListener("input",()=>{ team=teamEl.value; save(); if(tab==="cards") renderPanel(); updateSendBtn(); });
-const MODE_HASH={design:"design",play:"play",teams:"teams",score:"scoreboard"};
+const MODE_HASH={design:"design",play:"play",peer:"peer",teams:"teams",score:"scoreboard"};
 function setMode(md, fromHash){
   if((md==="teams"||md==="score") && !isAdmin && !fromHash){ adminDialog(()=>setMode(md)); return; }
   mode=md;
-  [["modeDesign","design"],["modePlay","play"],["modeTeams","teams"],["modeScore","score"]].forEach(([id,v])=>document.getElementById(id).setAttribute("aria-pressed",md===v));
+  [["modeDesign","design"],["modePlay","play"],["modePeer","peer"],["modeTeams","teams"],["modeScore","score"]].forEach(([id,v])=>document.getElementById(id).setAttribute("aria-pressed",md===v));
   document.getElementById("toolbar").hidden = md!=="design";
-  document.querySelector(".boardcard").hidden = (md==="teams"||md==="score");
+  document.querySelector(".boardcard").hidden = (md==="teams"||md==="score"||md==="peer");
   sel=null; pending=null; highlight=null; anim=null; tab = md==="play"?"clean":"table";
   if(!fromHash){ try{ history.replaceState(null,"","#"+MODE_HASH[md]); }catch(e){} }
   renderAll(); }
@@ -1747,13 +1812,14 @@ document.getElementById("modeDesign").onclick=()=>setMode("design");
 document.getElementById("homeLink").addEventListener("click",e=>{ e.preventDefault(); play=null; document.getElementById("dlgRoot").innerHTML=""; setMode("design"); window.scrollTo({top:0, behavior: reduce?"auto":"smooth"}); });
 document.getElementById("modePlay").onclick=()=>setMode("play");
 document.getElementById("modeTeams").onclick=()=>setMode("teams");
+document.getElementById("modePeer").onclick=()=>setMode("peer");
 document.getElementById("modeScore").onclick=()=>setMode("score");
 document.getElementById("adminBtn").onclick=()=>{ if(isAdmin){ setAdmin(false); toast("관리자 모드에서 나왔어요"); if(mode==="teams"||mode==="score") setMode("play"); else renderAll(); } else adminDialog(); };
 let tt; function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2200); }
 function updateBgBtn(){ const o=bgSel.querySelector('option[value="photo"]'); o.textContent = S.bg? "배경: 배치도 사진":"배경: 배치도 사진 올리기…"; bgSel.value = S.bgMode||"school"; }
 function commit(){ highlight=null; save(); renderAll(); }
 function renderAll(){ updateAdminUI(); renderTabs(); render(); renderPanel(); setHint(); updateBgBtn(); renderPalette(); updateSendBtn();
-  document.querySelector(".boardcard").hidden = (mode==="teams"||mode==="score"||(mode==="play"&&!play)); }
+  document.querySelector(".boardcard").hidden = (mode==="teams"||mode==="score"||mode==="peer"||(mode==="play"&&!play)); }
 document.addEventListener("keydown",e=>{ if(mode!=="design"||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
   if(e.key==="Delete"||e.key==="Backspace"){ if(sel&&sel.type==="node") removeNode(sel.id); else if(sel&&sel.type==="edge"){ S.edges=S.edges.filter(x=>x.id!==sel.id); sel=null; commit(); } }
   if(e.key==="Escape"){ sel=null; pending=null; renderAll(); } });
