@@ -55,7 +55,7 @@ h1,h2,h3{text-wrap:balance}
 .tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* hero */
 .hero{position:relative;overflow:hidden;min-height:440px;display:flex;align-items:center;border:1px solid rgba(0,229,255,.25);border-radius:6px;background:#030812}
-.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+#cv-hero{position:absolute;inset:0;width:100%;height:100%}
 .hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(3,8,18,.94) 0%,rgba(3,8,18,.62) 40%,rgba(3,8,18,0) 68%)}
 .hero-text{position:relative;z-index:1;padding:44px clamp(22px,4vw,54px);max-width:600px;display:flex;flex-direction:column;gap:16px}
 .hero h1{font-family:var(--f-body);font-weight:700;font-size:clamp(26px,6vw,68px);line-height:1.1;margin:0;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 0 18px rgba(3,8,18,.9),0 0 4px rgba(3,8,18,.9)}
@@ -264,6 +264,38 @@ pre.matrix{margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.5;col
 .dg-pipe div{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;font-size:13px}
 .dg-pipe b{color:var(--accent)}
 .dg-dataset{width:100%;max-width:560px;image-rendering:pixelated;border:1px solid var(--line)}
+
+.theory-wrap{display:flex;flex-direction:column;gap:12px}
+.sec-h{display:flex;flex-direction:column;gap:2px}
+.sec-h h2{margin:0;font-size:19px}
+.sec-h p{margin:0;font-size:14px;color:var(--muted)}
+.theory{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.tcard{padding:16px;display:flex;flex-direction:column;gap:8px;border-color:color-mix(in srgb,var(--uc,var(--accent)) 45%,transparent)}
+.tcard .tn{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--uc,var(--accent))}
+.tcard h3{margin:0;font-size:17px;text-shadow:0 0 10px color-mix(in srgb,var(--uc,var(--accent)) 35%,transparent)}
+.tcard p{margin:0;font-size:14px;color:#c7d8f0;line-height:1.65}
+.tcard .ex{margin-top:auto;border:1px dashed rgba(255,210,63,.4);background:rgba(255,210,63,.05);border-radius:4px;padding:10px 12px;font-size:13.5px;line-height:1.6}
+.tcard .ex b{display:block;color:var(--path);font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;margin-bottom:3px;font-weight:600}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,390px);gap:12px;align-items:center}
+.learn{position:relative;z-index:2;margin:24px 24px 24px 0;padding:18px;display:flex;flex-direction:column;gap:10px;background:rgba(5,12,28,.82);backdrop-filter:blur(6px);border-color:rgba(0,229,255,.45);box-shadow:0 0 26px -8px var(--accent)}
+.learn h2{margin:0;font-size:20px}
+.learn .lsub{margin:0;font-size:13px;color:var(--muted)}
+.lsteps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.lsteps button{font:inherit;font-size:11.5px;padding:7px 2px;border-radius:3px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;line-height:1.3}
+.lsteps button b{display:block;font-family:var(--f-disp);font-size:13px;color:var(--accent)}
+.lsteps button[aria-selected="true"]{border-color:var(--accent);color:var(--ink);background:rgba(0,229,255,.1);box-shadow:0 0 12px -4px var(--accent)}
+.lbody{display:flex;flex-direction:column;gap:8px;min-height:190px}
+.lbody h3{margin:0;font-size:16px;color:var(--accent)}
+.lbody p{margin:0;font-size:14px;color:#c7d8f0;line-height:1.6}
+.lbody p b{color:var(--ink)}
+.lbody canvas{width:100%;image-rendering:pixelated;border:1px solid var(--line);border-radius:2px;background:#000}
+.split{display:flex;height:22px;border-radius:3px;overflow:hidden;font-family:var(--f-mono);font-size:11px}
+.split span{display:grid;place-items:center;color:var(--accent-ink);font-weight:600}
+.bigacc{font-family:var(--f-disp);font-weight:900;font-size:44px;color:var(--good);text-shadow:0 0 20px rgba(45,255,160,.5);line-height:1}
+@media (max-width:1100px){.hero{grid-template-columns:minmax(0,1fr)}.learn{margin:0 20px 20px}}
+.modal.lmodal .box{width:min(760px,100%)}
+.lmodal th,.lmodal td{white-space:nowrap}
+.lmodal h4{margin:12px 0 6px;font-size:15px}
 /* mini lesson */
 .mini{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;padding:18px}
 @media (max-width:860px){.mini{grid-template-columns:minmax(0,1fr)}}
@@ -868,6 +900,12 @@ pre.matrix{margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.5;col
     <div class="row"><button class="btn primary" type="submit">접속하기</button><button class="btn" type="button" id="lg-cancel">닫기</button></div>
     <div id="lg-list-wrap" hidden><span class="eyebrow" style="color:var(--muted)">이 기기에 저장된 학습자</span><div class="plist" id="lg-list"></div></div>
   </form>
+</div>
+<div class="modal lmodal" id="learn-modal" hidden>
+  <div class="box hud" role="dialog" aria-modal="true" aria-labelledby="lm-t">
+    <div class="row" style="justify-content:space-between"><div><span class="eyebrow">HOW AI LEARNED</span><h2 id="lm-t">이 인공지능은 어떻게 만들어졌을까?</h2></div><button class="btn" type="button" data-close>닫기</button></div>
+    <div class="lm-body"></div>
+  </div>
 </div>
 <div class="toast" id="toast" hidden></div>
 
@@ -1553,6 +1591,7 @@ const Diag=(()=>{
   return{draw:render,stop(){}};
 })();
 
+let _MODEL=null;const getModel=()=>_MODEL||(_MODEL=JSON.parse(document.getElementById('dg-model').textContent));
 /* ================= SIM: 손글씨 숫자 분류 (3-8 글자 분류) ================= */
 const Digit=(()=>{
   const D=id=>document.getElementById(id);
@@ -1565,7 +1604,7 @@ const Digit=(()=>{
   for(let j=0;j<32;j++)PT.h2.push([LX[2],(3.5-Math.floor(j/4))*24,(j%4-1.5)*24]);
   for(let j=0;j<10;j++)PT.out.push([LX[3],(4.5-j)*26,0]);
   const CAM0={yaw:-0.62,pitch:0.28,zoom:1};let cam={...CAM0},W0=0,H0=0,dpr=1;
-  function init(){if(ready)return;ready=true;M=JSON.parse(D('dg-model').textContent);const S=[784,64,32,10];
+  function init(){if(ready)return;ready=true;M=getModel();const S=[784,64,32,10];
     W=M.W.map((w,k)=>{const a=new Float32Array(S[k]*S[k+1]);let p=0;for(const r of w)for(const v of r)a[p++]=v;return a;});B=M.b.map(b=>Float32Array.from(b));
     const f=n=>n.toLocaleString('ko-KR');D('dg-nall').textContent=f(M.ntrain+M.ntest);D('dg-ntr').textContent=f(M.ntrain);D('dg-nte').textContent=f(M.ntest);D('dg-acc').textContent=M.acc+'%';D('dg-nparam').textContent=f(784*64+64+64*32+32+32*10+10);
     const dc=D('dg-dataset').getContext('2d'),im=dc.createImageData(280,100);for(let d=0;d<10;d++)for(let k=0;k<3;k++){const px=M.samples[d][k];for(let i=0;i<784;i++){const r=Math.floor(i/28),q=i%28,X=d*28+q,Y=k*33+r;if(Y>=100)continue;const o=(Y*280+X)*4;im.data[o]=im.data[o+1]=im.data[o+2]=px[i];im.data[o+3]=255;}}for(let o=3;o<im.data.length;o+=4)if(!im.data[o])im.data[o]=255;dc.putImageData(im,0,0);
@@ -1972,6 +2011,67 @@ q('l5-5','책임성','책임성 원칙에 대한 설명은?',['문제가 생기�
 q('l5-5','영향 평가','기업이 사회적 책임을 다하는 행동은?',['출시 전 위험과 영향을 평가하고 결과를 공개한다','빨리 출시하는 것만 중요하다','문제를 숨긴다','사용자에게 책임을 넘긴다'],'사전 평가와 공개로 신뢰를 얻습니다.');
 q('l2-2','전문가 시스템','전문가 시스템에서 추론 엔진의 역할은?',['지식 베이스의 규칙을 주어진 사실에 적용해 결론을 이끌어 낸다','센서 데이터를 저장만 한다','규칙을 무작위로 삭제한다','사용자 화면을 꾸민다'],'전문가 시스템 = 지식 베이스(규칙) + 추론 엔진 + 사용자 인터페이스입니다.');
 q('l2-2','후방향 추론의 효율','고장 진단 시스템에서 후방향 추론이 효율적인 이유는?',['확인하려는 원인(목표)에 필요한 질문만 하므로 질문 수를 줄일 수 있다','모든 사실을 빠짐없이 물어보기 때문','질문을 하지 않아도 되기 때문','결론을 무작위로 정하기 때문'],'목표에서 거꾸로 필요한 조건만 확인하므로 불필요한 질문을 줄입니다.');
+/* ================= 차시별 기본 이론 + 실생활 예시 ================= */
+const THEORY={
+'l1-1':[['인공지능이란?','사람의 학습·추론·인식·판단 같은 지능적 행동을 컴퓨터로 구현한 기술입니다. 입력을 받아들이고, 의미를 파악하고, 알맞은 행동을 고르는 과정으로 이루어집니다.','스마트폰 음성 비서는 「내일 날씨 알려 줘」라는 소리를 글자로 인식하고, 날씨를 묻는 의도를 추론한 뒤, 날씨 정보를 찾아 답합니다.'],
+ ['규칙 기반과 학습 기반','규칙 기반 AI는 사람이 IF-THEN 규칙을 직접 써 넣고, 학습 기반 AI(기계학습)는 많은 데이터에서 규칙을 스스로 찾아냅니다. 규칙이 분명하면 규칙 기반이, 규칙을 말로 정하기 어려우면 학습 기반이 유리합니다.','엘리베이터의 「정원 초과 시 경보」는 규칙 기반입니다. 은행의 이상 거래 탐지는 수백만 건의 거래 기록을 학습해 평소와 다른 패턴을 찾아냅니다.'],
+ ['약인공지능과 튜링 테스트','특정 분야만 잘하는 AI를 약인공지능, 사람처럼 모든 분야에서 생각하는 AI를 강인공지능이라 합니다. 튜링 테스트는 대화만으로 기계와 사람을 구별할 수 없으면 지능이 있다고 보는 시험입니다.','바둑 AI, 번역기, 얼굴 인식은 모두 약인공지능입니다. 고객센터 채팅 상담에서 상대가 사람인지 챗봇인지 헷갈린다면 튜링 테스트와 같은 상황입니다.']],
+'l1-2':[['이미지 인식','이미지는 픽셀마다 밝기(또는 R·G·B) 숫자를 가진 행렬입니다. AI는 이 숫자에서 선·모서리·모양 같은 특징을 뽑아 무엇이 있는지 판별합니다.','고속도로 하이패스 카메라는 번호판 사진에서 글자를 읽어 요금을 부과합니다. 스마트폰 얼굴 잠금은 얼굴의 특징점을 비교해 주인인지 판단합니다.'],
+ ['이미지 생성','수많은 이미지에서 배운 패턴을 이용해 존재하지 않던 새 이미지를 만듭니다. 글로 설명하면 그림을 그려 주는 서비스가 대표적입니다.','오래된 흑백 가족사진을 컬러로 복원하거나, 웹툰 작가가 배경 초안을 빠르게 만드는 데 쓰입니다.'],
+ ['AI와 미래 직업·사회','AI는 반복 업무를 자동화하고, 사람은 판단·창의·소통이 필요한 일에 집중하게 됩니다. AI를 만들고 관리하고 점검하는 새로운 직업도 생깁니다.','농업용 방제 드론 조종사, AI 학습 데이터를 다듬는 데이터 라벨러, AI가 공정하게 쓰이는지 점검하는 AI 윤리 담당자가 새로 생긴 직업입니다.']],
+'l2-1':[['상태 공간과 탐색','문제를 상태(노드)와 상태 사이의 이동(간선)으로 나타내고, 출발 상태에서 목표 상태까지 가는 길을 찾는 것이 탐색입니다.','지하철 노선도에서 역은 상태, 역과 역을 잇는 구간은 이동입니다. 환승 경로 안내는 출발역에서 도착역까지의 탐색 결과입니다.'],
+ ['맹목적 탐색: BFS와 DFS','목표에 대한 정보 없이 정해진 순서로 살펴봅니다. BFS는 가까운 곳부터 넓게(큐), DFS는 한 길을 끝까지 깊게(스택) 탐색합니다.','SNS의 「알 수도 있는 친구」는 친구의 친구처럼 가까운 관계부터 찾는 BFS 방식입니다. 컴퓨터에서 폴더 안의 폴더를 끝까지 열어 보며 파일을 찾는 것은 DFS 방식입니다.'],
+ ['지능적 탐색: 휴리스틱과 A*','목표까지 남은 거리를 추정한 값(휴리스틱 h)을 이용해 유망한 쪽부터 탐색합니다. A*는 지금까지의 비용 g와 h를 더한 f가 가장 작은 곳을 고릅니다.','내비게이션은 목적지까지의 직선거리를 참고해 목적지 방향 도로를 먼저 검토합니다. 게임 속 캐릭터가 장애물을 피해 플레이어를 쫓아오는 길찾기에도 A*가 쓰입니다.']],
+'l2-2':[['지식 표현','컴퓨터가 지식을 다룰 수 있도록 규칙(IF-THEN), 의미망(개념과 관계의 그래프), 프레임(속성 칸과 값) 같은 형태로 나타냅니다.','검색 엔진에서 인물을 검색하면 옆에 나오는 정보 상자(출생, 직업, 관련 인물)는 지식 그래프, 즉 의미망으로 저장된 지식입니다.'],
+ ['전방향 추론','알고 있는 사실에서 출발해 조건이 맞는 규칙을 차례로 적용하며 새로운 사실과 결론을 이끌어 냅니다. 센서 값처럼 사실이 계속 들어오는 상황에 알맞습니다.','스마트홈은 「외출 모드이다」와 「창문이 열려 있다」는 사실이 모두 참이면 「휴대폰으로 경고를 보낸다」는 결론을 내립니다.'],
+ ['후방향 추론과 전문가 시스템','확인하고 싶은 목표(가설)에서 출발해 그 목표에 필요한 조건만 거꾸로 확인합니다. 지식 베이스와 추론 엔진으로 전문가의 판단을 흉내 내는 프로그램을 전문가 시스템이라 합니다.','자동차 정비소의 진단 프로그램은 「배터리 문제인가?」를 확인하려고 배터리 전압 측정처럼 꼭 필요한 점검만 요청합니다.']],
+'l3-1':[['기계학습이란?','사람이 규칙을 쓰는 대신, 데이터와 정답을 보여 주면 컴퓨터가 둘 사이의 관계(모델)를 스스로 찾아냅니다. 학습한 모델은 새로운 데이터의 답을 예측합니다.','메일 앱은 사용자들이 「스팸 신고」를 누른 메일을 정답 삼아 학습해, 새로 온 메일이 스팸인지 스스로 판단합니다.'],
+ ['특성과 레이블','특성은 예측에 쓰는 입력값, 레이블은 맞혀야 하는 정답입니다. 어떤 특성을 고르느냐가 모델 성능을 크게 좌우합니다.','중고차 가격 예측에서 연식·주행거리·차종·사고 이력은 특성이고, 실제 거래 가격은 레이블입니다.'],
+ ['일반화와 과적합','처음 보는 데이터에서도 잘 맞히는 능력을 일반화라 합니다. 학습 데이터만 외워서 새 데이터에 약해지는 현상이 과적합입니다.','기출문제 답만 외운 학생은 새 문제를 못 풉니다(과적합). 원리를 이해한 학생은 처음 보는 문제도 풉니다(일반화). 그래서 시험용 데이터를 따로 두고 평가합니다.']],
+'l3-2':[['정형 데이터와 비정형 데이터','정형 데이터는 행과 열이 정해진 표 형태이고, 비정형 데이터는 글·사진·소리·영상처럼 형식이 자유롭습니다. 비정형 데이터는 숫자로 바꾸는 과정이 필요합니다.','학교 성적표와 출결표는 정형 데이터, 급식 사진과 수업 녹음 파일은 비정형 데이터입니다.'],
+ ['데이터 전처리','결측치(빈 값), 이상치(동떨어진 값), 중복, 형식 불일치를 찾아 고치는 과정입니다. 품질이 나쁜 데이터로 학습하면 모델도 나빠집니다.','온도 센서가 잠깐 고장 나 −999℃가 기록되었다면 이상치로 보고 지우거나 앞뒤 값으로 채웁니다. 같은 주문이 두 번 기록되면 하나를 지웁니다.'],
+ ['데이터 분할과 정규화','데이터를 학습용과 시험용(예: 8:2)으로 나눠 공정하게 평가합니다. 정규화는 단위와 범위가 다른 값을 0~1처럼 같은 범위로 맞춥니다.','키(150~190cm)와 몸무게(40~100kg)를 그대로 쓰면 숫자가 큰 쪽이 더 중요한 것처럼 반영됩니다. 둘 다 0~1로 바꾸면 공평하게 비교됩니다.']],
+'l3-3':[['지도학습','입력과 정답(레이블)이 함께 있는 데이터로 학습합니다. 정답이 범주이면 분류, 연속적인 숫자이면 회귀입니다.','반려동물 사진마다 「고양이」, 「강아지」 이름표가 붙은 데이터로 학습한 앱은 새 사진의 동물을 알아맞힙니다.'],
+ ['비지도학습','정답 없이 데이터 안의 구조나 비슷한 묶음을 찾습니다. 대표 알고리즘인 k-평균은 데이터를 k개의 군집으로 나눕니다.','음악 앱은 듣는 패턴이 비슷한 사용자끼리 묶은 뒤, 같은 묶음의 사람들이 좋아한 곡을 추천합니다.'],
+ ['강화학습','에이전트가 환경에서 행동하고 받은 보상과 벌점을 바탕으로, 보상이 최대가 되는 행동 방법(정책)을 시행착오로 배웁니다.','로봇 청소기는 부딪히면 벌점, 넓은 면적을 청소하면 보상을 받으며 효율적인 이동 경로를 익힙니다. 바둑 AI도 스스로 대국하며 이기는 수를 배웠습니다.']],
+'l3-4':[['대푯값','평균, 중앙값, 최빈값은 데이터 전체를 하나의 값으로 요약합니다. 극단적인 값이 있으면 평균보다 중앙값이 데이터를 더 잘 대표합니다.','반 학생들의 한 달 용돈을 조사했는데 한 명이 50만 원이라면 평균이 크게 올라갑니다. 이럴 땐 중앙값이 보통 학생의 용돈을 더 잘 보여 줍니다.'],
+ ['목적에 맞는 시각화','변화 추이는 선 그래프, 항목 비교는 막대그래프, 두 변수 관계는 산점도, 비율은 원그래프, 분포는 히스토그램이 알맞습니다.','기상청의 월별 기온은 선 그래프, 반별 줄넘기 기록 비교는 막대그래프, 키와 몸무게의 관계는 산점도로 그립니다.'],
+ ['상관관계','두 변수가 함께 변하는 정도를 상관계수 r(−1~1)로 나타냅니다. 함께 커지면 양의 상관, 한쪽이 커질 때 다른 쪽이 작아지면 음의 상관입니다.','여름에 기온이 오를수록 냉방 전력 사용량이 늘어나는 것은 양의 상관, 산을 오를수록 기온이 떨어지는 것은 음의 상관입니다.']],
+'l3-5':[['탐색적 데이터 분석(EDA)','모델을 만들기 전에 데이터의 구조, 분포, 변수 사이의 관계, 문제점을 요약 통계와 그래프로 먼저 살펴보는 과정입니다.','응급실 방문 데이터를 받으면 요일별·시간대별 방문 수를 먼저 그려 봅니다. 주말 밤에 환자가 몰린다는 사실을 알면 예측 모델의 방향이 정해집니다.'],
+ ['상관관계는 인과관계가 아니다','두 변수가 함께 움직여도 한쪽이 다른 쪽의 원인이라고 단정할 수 없습니다. 두 변수에 함께 영향을 주는 제3의 요인이 있을 수 있습니다.','아이스크림 판매량과 물놀이 사고는 함께 늘지만, 아이스크림이 사고를 부르는 것이 아니라 더운 날씨가 공통 원인입니다.'],
+ ['이상치 찾기와 상자그림','상자그림은 중앙값, 사분위수, 이상치를 한눈에 보여 줍니다. 이상치는 입력 오류인지 의미 있는 특별한 사례인지 확인한 뒤 처리합니다.','쇼핑몰 주문 금액에서 0원 주문은 시스템 오류일 수 있고, 1억 원 주문은 기업 고객일 수 있습니다. 원인을 확인하지 않고 지우면 중요한 정보를 잃습니다.']],
+'l3-6':[['회귀 모델','키·가격·시간처럼 연속적인 숫자를 예측합니다. 선형회귀는 ŷ = w·x + b 형태의 직선으로 입력과 출력의 관계를 나타냅니다.','택시 앱의 예상 요금과 도착 시간, 부동산 앱의 아파트 예상 시세가 회귀 모델로 계산됩니다.'],
+ ['손실 함수: MSE','예측값과 실제값의 차이(오차)를 제곱해 평균 낸 값이 평균제곱오차(MSE)입니다. MSE가 작을수록 모델이 데이터에 잘 맞습니다.','배달 앱이 30분이라고 예측했는데 실제로 40분 걸렸다면 오차는 10분입니다. 수많은 주문의 오차를 모아 MSE로 예측 정확도를 평가합니다.'],
+ ['경사하강법과 학습률','손실이 줄어드는 방향(기울기의 반대 방향)으로 w와 b를 조금씩 고쳐 나가는 학습 방법입니다. 한 번에 움직이는 크기가 학습률입니다.','안개 낀 산에서 발밑의 경사만 느끼며 아래로 내려가는 것과 같습니다. 보폭이 너무 크면 골짜기를 건너뛰어 반대편으로 올라가 버립니다(발산).']],
+'l3-7':[['분류 모델','입력을 미리 정한 범주 중 하나로 나눕니다. 결과는 「스팸/정상」처럼 범주이고, 범주별 확률을 함께 내기도 합니다.','은행의 대출 승인·거절, 병원 영상의 정상·이상 판정, 공장 제품의 양품·불량 판정이 분류 문제입니다.'],
+ ['k-최근접 이웃(k-NN)','새 데이터와 가장 가까운 학습 데이터 k개를 찾아 다수결로 범주를 정합니다. k가 너무 작으면 잡음에 흔들리고, 너무 크면 경계가 뭉개집니다.','이사 온 동네에서 가장 가까운 이웃 다섯 집 중 세 집이 쓰는 인터넷 회사를 따라 고르는 것과 같은 방식입니다.'],
+ ['정밀도와 재현율','정밀도는 양성이라고 예측한 것 중 진짜 양성의 비율, 재현율은 실제 양성 중 찾아낸 비율입니다. 상황에 따라 더 중요한 지표가 다릅니다.','공항 보안 검색은 위험물을 놓치면 안 되므로 재현율이 중요합니다. 스팸 필터는 중요한 업무 메일을 스팸함에 넣으면 안 되므로 정밀도가 중요합니다.']],
+'l3-8':[['이미지를 숫자로','손글씨 그림을 28×28칸으로 줄이면 784개의 밝기 값(0~1)이 됩니다. 신경망에게 그림은 이 숫자 목록입니다.','우체국의 우편번호 자동 분류기와 은행의 수표 금액 인식기가 손글씨 숫자를 이렇게 읽습니다.'],
+ ['층마다 다른 특징을 본다','은닉층1은 획의 조각 무늬를, 은닉층2는 조각을 모은 큰 모양을 찾고, 출력층은 숫자별 점수를 소프트맥스로 확률(%)로 바꿉니다.','사람이 8을 볼 때 동그라미 두 개가 위아래로 붙어 있는지 확인하는 것처럼, 신경망도 작은 특징을 조합해 숫자를 판단합니다.'],
+ ['데이터 증강과 평가','학습 이미지를 기울이고 늘리고 굵게 바꿔 연습시키면 다양한 손글씨에 강해집니다. 성능은 한 번도 보지 못한 시험용 이미지로 잽니다.','사람마다 숫자를 비스듬히 쓰거나 크게 씁니다. 증강은 이런 차이를 미리 연습하는 것이고, 시험용 데이터는 실력을 확인하는 모의고사입니다.']],
+'l4-1':[['인공 뉴런(퍼셉트론)','여러 입력에 각각의 가중치를 곱해 더하고 편향을 더한 뒤, 기준을 넘으면 1을 출력합니다. 가중치는 입력의 중요도를 뜻합니다.','소풍을 갈지 정할 때 날씨(가중치 큼), 친구 참석 여부(중간), 밀린 숙제(음수)를 따져 합계가 기준을 넘으면 가기로 하는 것과 같습니다.'],
+ ['활성화 함수와 다층 구조','활성화 함수는 뉴런에 비선형성을 더합니다. 단층 퍼셉트론은 직선 하나로 나눌 수 없는 XOR 문제를 못 풀어서 은닉층을 쌓은 다층 신경망이 필요합니다.','계단 위아래 두 스위치로 켜고 끄는 조명은 두 스위치 중 하나만 바뀌었을 때 상태가 바뀌는 XOR 구조입니다. 단순한 직선 규칙 하나로는 표현할 수 없습니다.'],
+ ['학습: 손실과 역전파','출력과 정답의 차이(손실)를 계산하고, 그 오차를 출력층에서 입력 쪽으로 거꾸로 전달하며 각 가중치를 손실이 줄어드는 방향으로 고칩니다.','양궁 선수가 과녁 중앙에서 빗나간 방향과 거리를 보고 조준과 자세를 조금씩 고치는 것과 같습니다.']],
+'l4-2':[['CNN: 이미지 딥러닝','합성곱 필터로 이미지의 지역 특징(선, 질감, 모양)을 층층이 뽑아 이미지를 인식합니다.','공장 컨베이어의 카메라가 제품 사진에서 흠집을 찾아내고, 피부과에서 점 사진을 분석해 의사의 판독을 돕습니다.'],
+ ['트랜스포머: 언어 딥러닝','문장 속 단어들이 서로 얼마나 관련 있는지(어텐션)를 계산해 문맥을 이해합니다. 번역, 요약, 대화형 AI의 바탕입니다.','온라인 회의가 끝나면 자동으로 회의록을 요약해 주는 서비스, 외국어 메뉴판을 사진으로 찍어 번역하는 앱이 트랜스포머를 씁니다.'],
+ ['생성 모델과 전이학습','생성 모델은 새로운 이미지·글을 만듭니다. 전이학습은 큰 데이터로 미리 학습한 모델을 가져와 적은 데이터로 새 문제에 맞춥니다.','일반 사진 수백만 장으로 학습한 모델에 우리 학교 화단 식물 사진 100장만 더 학습시켜 교내 식물 도감 앱을 만들 수 있습니다.']],
+'l5-1':[['AI 정보를 판별하는 힘','생성형 AI는 그럴듯하지만 틀린 정보(환각)를 만들 수 있고, 딥페이크는 진짜처럼 보이는 가짜 영상을 만듭니다. 출처를 확인하고 교차 검증해야 합니다.','유명인의 충격 발언 영상이 퍼지면 공식 채널과 여러 언론사 보도를 확인하고, 사실이 확인되기 전에는 공유하지 않습니다.'],
+ ['저작권과 AI 사용 표시','AI 결과물도 다른 사람의 저작물이나 초상을 침해할 수 있습니다. 과제나 작품에 AI를 썼다면 사용한 도구와 범위를 밝힙니다.','학교 축제 포스터에 생성형 AI 이미지를 썼다면 포스터 아래에 「이미지 일부 AI 생성」이라고 표시합니다.'],
+ ['개인정보 보호와 참여','타인의 이름, 연락처, 사진 같은 개인정보를 AI 서비스에 함부로 입력하지 않습니다. AI 사용 규칙을 만드는 과정에 근거를 들어 의견을 냅니다.','학급 단체 사진을 AI 편집 앱에 올리기 전에 친구들의 동의를 구합니다. 학교의 AI 활용 규칙 공청회에서 학생 의견을 제출합니다.']],
+'l5-2':[['AI가 만드는 긍정적 변화','AI는 의료, 교통, 접근성, 농업 등 여러 분야에서 사람의 삶을 돕습니다.','실시간 자막 서비스로 청각장애 학생이 수업 내용을 바로 읽고, 농촌에서는 드론이 병든 작물을 찾아 필요한 곳에만 약을 뿌립니다.'],
+ ['필터 버블','추천 알고리즘이 내가 좋아할 만한 정보만 계속 보여 주면, 비슷한 생각에 갇혀 다른 관점을 접하기 어려워집니다.','짧은 영상 앱에서 한 주제의 영상을 몇 개 보면 비슷한 영상만 계속 추천되어 한쪽 의견이 전부인 것처럼 느껴집니다.'],
+ ['디지털 격차와 일자리 변화','기술에 접근하고 활용하는 능력의 차이가 불평등을 만듭니다. 자동화로 사라지는 일과 새로 생기는 일이 함께 나타납니다.','식당 무인 주문기 앞에서 어려움을 겪는 어르신이 있습니다. 은행 창구 직원은 줄고 데이터 분석가와 AI 서비스 기획자는 늘고 있습니다.']],
+'l5-3':[['사람과 AI의 역할 분담','AI는 빠른 계산과 대량 데이터 처리에, 사람은 공감, 윤리적 판단, 최종 책임에 강합니다. 서로의 강점을 합칠 때 결과가 가장 좋습니다.','영상의학과에서 AI가 수천 장의 영상 중 의심 부위를 먼저 표시하면, 의사가 환자의 상황까지 고려해 최종 진단을 내립니다.'],
+ ['휴먼 인 더 루프','AI가 결정하는 과정에 사람이 검토하고 개입할 수 있게 설계하는 방식입니다. 중요한 결정일수록 사람의 확인 단계가 필요합니다.','자율주행차는 판단이 어려운 공사 구간에서 운전자에게 제어권을 넘깁니다. SNS 신고 게시물도 AI가 먼저 거르고 사람이 최종 판단합니다.'],
+ ['설명 가능한 AI','AI가 왜 그런 결과를 냈는지 근거를 보여 주면 사람이 믿고 쓸 수 있고, 잘못된 판단도 바로잡을 수 있습니다.','대출 심사 AI가 거절 사유로 「소득 대비 부채 비율」을 함께 알려 주거나, 의료 AI가 판단 근거가 된 영상 부위를 색으로 표시합니다.']],
+'l5-4':[['데이터 편향','특정 집단의 데이터가 부족하거나 과거의 차별이 담긴 데이터로 학습하면 AI도 그 편향을 그대로 배웁니다.','과거 합격자가 대부분 남성이던 이력서로 학습한 채용 AI가 여성 지원자에게 불리한 점수를 준 해외 사례가 있습니다. 일부 얼굴 인식 AI는 피부색에 따라 오류율이 달랐습니다.'],
+ ['대리 변수와 피드백 루프','성별·인종 같은 민감 정보를 지워도 거주지·출신 학교 같은 대리 변수가 같은 정보를 담을 수 있습니다. 편향된 예측이 다시 데이터가 되면 편향이 강화됩니다.','범죄 예측 AI가 특정 동네를 위험하다고 예측해 순찰이 늘면 그 동네의 단속 기록이 늘고, 다시 더 위험하다고 예측하는 악순환이 생깁니다.'],
+ ['윤리적 딜레마','어느 선택도 모두를 만족시키기 어려운 상황입니다. 정답을 고르기보다 다양한 이해관계자의 의견을 모아 사회적 기준을 만듭니다.','피할 수 없는 사고 상황에서 자율주행차가 탑승자와 보행자 중 누구를 우선 보호해야 하는지는 기술만으로 정할 수 없는 문제입니다.']],
+'l5-5':[['공정성과 4/5 규칙','공정한 AI는 집단에 따라 차별 없이 비슷한 기준과 결과를 줍니다. 한 집단의 선발률이 가장 높은 집단의 80% 미만이면 차별 가능성을 의심합니다(4/5 규칙).','장학생 선발 AI의 지역별 선발률이 A 지역 40%, B 지역 20%라면 비율이 0.5로 0.8보다 낮으므로 원인을 점검해야 합니다.'],
+ ['투명성과 책임성','AI의 작동 방식과 데이터 사용을 이해할 수 있게 공개하고(투명성), 문제가 생기면 책임 주체와 바로잡는 절차가 분명해야 합니다(책임성).','AI 면접에서 탈락한 지원자에게 평가 기준을 설명하고 이의 신청 절차를 안내하는 것이 투명성과 책임성의 실천입니다.'],
+ ['AI 윤리 원칙의 실천','우리나라의 「국가 인공지능 윤리기준」(2020)은 인간 존엄성, 사회의 공공선, 기술의 합목적성을 3대 기본 원칙으로 제시합니다. 개발자, 기업, 사용자 모두가 실천 주체입니다.','기업은 AI 서비스 출시 전에 집단별 성능과 사회적 영향을 평가해 공개하고, 사용자는 AI 결과를 그대로 믿지 않고 확인하는 습관을 가집니다.']]
+};
+
 const QMAP=new Map(QB.map(x=>[x.id,x]));
 const LMAP=new Map(LESSONS.map(l=>[l.id,l]));
 
@@ -2014,6 +2114,8 @@ $('#login-form').addEventListener('submit',e=>{e.preventDefault();const sid=$('#
   if(!STORE.profiles[k])STORE.profiles[k]={sid,name,acts:{},qs:{},created:Date.now(),updated:Date.now()};STORE.cur=k;save();$('#login').hidden=true;toast('<b>ACCESS</b> '+esc(name)+' 학습자로 접속했습니다');route();});
 $('#lg-cancel').onclick=()=>{$('#login').hidden=true;};
 $('#userchip').onclick=openLogin;
+$('#learn-modal').addEventListener('click',e=>{if(e.target.id==='learn-modal'||e.target.closest('[data-close]'))$('#learn-modal').hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#learn-modal').hidden=true;});
 
 /* ================= 첫 화면 ================= */
 function renderHome(){
@@ -2023,13 +2125,43 @@ function renderHome(){
    '<h1>라파샘의 <span class="glitch" data-t="인기초">인기초</span> 실습실</h1>'+
    '<p>인공지능 기초 5개 단원 '+LESSONS.length+'차시. 수준별 활동과 미니레슨으로 점수를 쌓고, AI 분석실에서 나의 강점과 약점을 확인하세요.</p>'+
    '<div class="hud-line">SYS <b>●</b> ACTIVE · UNITS 05 · LESSONS '+LESSONS.length+' · ACTIVITIES '+TOTAL_ACTS+' · QUIZ '+QB.length+'</div>'+
-   '<div class="hero-cta"><a class="cta" href="#l1-1">첫 차시 시작하기</a><a class="cta ghost" href="#analysis">AI 분석실</a></div></div></div>'+
+   '<div class="hero-cta"><a class="cta" href="#l1-1">첫 차시 시작하기</a><a class="cta ghost" href="#analysis">AI 분석실</a></div></div>'+learnPanel()+'</div>'+
    UNITS.map(u=>{const ls=LESSONS.filter(l=>l.u===u.no);const us=unitStat(u.no);
     return '<section class="unit" style="--uc:var(--'+u.c+')"><div class="unit-head"><span class="unit-no">UNIT 0'+u.no+'</span><h2>'+u.title+'</h2>'+(p?'<span class="usc">'+us.e+' / '+us.m+' P</span>':'')+'</div><div class="lessons">'+
      ls.map((l,i)=>{const dots=l.acts.map((_,lv)=>'<i class="'+(p&&p.acts[l.id+':'+lv]?'on':'')+'"></i>').join('');
       return '<a class="lcard hud" style="--dl:-'+(i*0.7).toFixed(1)+'s" href="#'+l.id+'"><span class="no">'+u.no+'-'+(i+1)+'</span><h3>'+l.title+'</h3><p>'+l.intro+'</p><span class="lmeta"><span class="lvdots" aria-label="수준별 활동 완료 현황">'+dots+'</span><span>미니레슨 '+(p?lessonQs(l.id).filter(x=>p.qs[x.id]&&p.qs[x.id].pts).length:0)+'/'+lessonQs(l.id).length+'</span>'+(p?'<span class="sc">'+lessonEarned(l.id)+' P</span>':'')+'</span></a>';}).join('')+'</div></section>';}).join('');
-  Hero.start();
+  Hero.start();bindLearn();
 }
+
+
+/* ================= 첫 화면: AI는 어떻게 배웠을까? ================= */
+let LSTEP=0;
+function learnPanel(){return '<aside class="learn hud" aria-labelledby="learn-t"><span class="eyebrow">HOW AI LEARNED</span><h2 id="learn-t">AI는 어떻게 배웠을까?</h2><p class="lsub">3-8 글자 분류의 손글씨 숫자 인식 AI가 만들어진 5단계를 따라가 보세요.</p>'+
+  '<div class="lsteps" role="tablist">'+['데이터<br>수집','데이터<br>준비','학습','평가','활용'].map((t,i)=>'<button type="button" role="tab" data-ls="'+i+'" aria-selected="'+(i===LSTEP)+'"><b>'+'①②③④⑤'[i]+'</b>'+t+'</button>').join('')+'</div>'+
+  '<div class="lbody" id="learn-body"></div><div class="row" style="justify-content:space-between"><div class="row"><button class="btn" type="button" id="learn-prev" aria-label="이전 단계">←</button><button class="btn" type="button" id="learn-next" aria-label="다음 단계">→</button></div><button class="btn primary" type="button" id="learn-more">자세히 보기</button></div></aside>';}
+function sampleCanvas(cols,rows){const M=getModel();const c=document.createElement('canvas');c.width=cols*28;c.height=rows*28;const x=c.getContext('2d'),im=x.createImageData(c.width,c.height);
+  for(let k=0;k<rows;k++)for(let d=0;d<cols;d++){const px=M.samples[d%10][k%M.samples[d%10].length];for(let i=0;i<784;i++){const X=d*28+i%28,Y=k*28+Math.floor(i/28),o=(Y*c.width+X)*4;im.data[o]=px[i]*0;im.data[o+1]=px[i];im.data[o+2]=px[i];im.data[o+3]=255;}}x.putImageData(im,0,0);return c;}
+function accSvg(h){const L=getModel().log,x0=36,x1=290,y0=h-22,y1=10,lo=75,hi=100,X=e=>x0+(e-1)/(L.length-1)*(x1-x0),Y=v=>y0-(Math.max(lo,v)-lo)/(hi-lo)*(y0-y1);let s='<svg viewBox="0 0 300 '+h+'" style="width:100%;height:auto" role="img" aria-label="에포크별 시험용 정답률">';
+  [75,85,95].forEach(v=>s+='<line x1="'+x0+'" x2="'+x1+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#1b2a4d"/><text x="'+(x0-4)+'" y="'+(Y(v)+4)+'" text-anchor="end" font-size="10" fill="#7f95bb" font-family="JetBrains Mono,monospace">'+v+'%</text>');
+  s+='<path d="'+L.map((l,i)=>(i?'L':'M')+X(l[0]).toFixed(1)+','+Y(l[3]).toFixed(1)).join('')+'" fill="none" stroke="#00e5ff" stroke-width="2.5"/>';const e=L[L.length-1];
+  s+='<circle cx="'+X(e[0])+'" cy="'+Y(e[3])+'" r="4" fill="#2dffa0"/><text x="'+x0+'" y="'+(h-6)+'" font-size="10" fill="#7f95bb" font-family="JetBrains Mono,monospace">에포크 1</text><text x="'+x1+'" y="'+(h-6)+'" text-anchor="end" font-size="10" fill="#7f95bb" font-family="JetBrains Mono,monospace">'+L.length+'</text></svg>';return s;}
+function renderLearn(){const b=$('#learn-body');if(!b)return;const M=getModel(),f=n=>n.toLocaleString('ko-KR'),P=784*64+64+64*32+32+32*10+10;
+  $$('.lsteps button').forEach(x=>x.setAttribute('aria-selected',+x.dataset.ls===LSTEP?'true':'false'));
+  if(LSTEP===0){b.innerHTML='<h3>① 데이터 수집</h3><p>사람들이 직접 쓴 손글씨 숫자 이미지 <b>'+f(M.ntrain+M.ntest)+'장</b>과 각 그림의 정답(레이블)을 모았어요. 이 데이터를 <b>MNIST</b>라고 해요.</p>';b.appendChild(sampleCanvas(10,2));}
+  if(LSTEP===1){b.innerHTML='<h3>② 데이터 준비</h3><p>모든 그림을 <b>28×28 흑백(784칸)</b>으로 크기를 맞추고, 학습용과 시험용으로 나눴어요. 시험용은 학습에 절대 쓰지 않아요.</p><div class="split"><span style="flex:'+M.ntrain+';background:var(--accent)">학습용 '+f(M.ntrain)+'</span><span style="flex:'+M.ntest+';background:var(--mag)">시험 '+f(M.ntest)+'</span></div>';const c=sampleCanvas(1,1);c.style.maxWidth='120px';c.style.alignSelf='center';b.appendChild(c);}
+  if(LSTEP===2){b.innerHTML='<h3>③ 학습</h3><p>그림을 보고 <b>예측 → 정답과 비교 → 틀린 만큼 가중치 수정</b>을 '+M.log.length+'번(에포크) 반복했어요. 사람이 규칙을 쓰지 않고 가중치 <b>'+f(P)+'개</b>를 스스로 조정했어요.</p>'+accSvg(130);}
+  if(LSTEP===3){b.innerHTML='<h3>④ 평가</h3><div class="row" style="gap:14px;align-items:center"><span class="bigacc">'+M.acc+'%</span><p style="flex:1;min-width:150px">한 번도 보지 못한 시험용 <b>'+f(M.ntest)+'장</b>으로 잰 정확도예요.</p></div><p>학습할 때 그림을 기울이고, 늘리고, 굵게 바꾸는 <b>데이터 증강</b>으로 연습해서 여러분의 다양한 손글씨도 잘 알아봐요.</p>';}
+  if(LSTEP===4){b.innerHTML='<h3>⑤ 활용</h3><p>이제 AI가 <b>처음 보는 새 손글씨</b>를 인식할 수 있어요. 여러분이 그린 숫자가 입력층 784개 → 은닉층 64개 → 은닉층 32개 → 출력층 10개를 거쳐 판단되는 과정을 3D로 볼 수 있어요.</p><a class="cta" href="#l3-8" style="align-self:flex-start;font-size:14px;padding:9px 14px">3-8 글자 분류에서 직접 그려 보기 →</a>';}}
+function bindLearn(){const box=$('.learn');if(!box)return;box.querySelector('.lsteps').onclick=e=>{const t=e.target.closest('[data-ls]');if(!t)return;LSTEP=+t.dataset.ls;renderLearn();};
+  $('#learn-prev').onclick=()=>{LSTEP=(LSTEP+4)%5;renderLearn();};$('#learn-next').onclick=()=>{LSTEP=(LSTEP+1)%5;renderLearn();};$('#learn-more').onclick=openLearnModal;renderLearn();}
+function openLearnModal(){const M=getModel(),f=n=>n.toLocaleString('ko-KR'),m=$('#learn-modal');
+  m.querySelector('.lm-body').innerHTML='<div class="dg-pipe"><div><b>① 데이터 수집</b><span>MNIST: 사람들이 쓴 손글씨 숫자 이미지 '+f(M.ntrain+M.ntest)+'장과 정답(레이블)</span></div><div><b>② 데이터 준비</b><span>모든 그림을 28×28 흑백으로 맞추고 학습용 '+f(M.ntrain)+'장 / 시험용 '+f(M.ntest)+'장으로 나눔</span></div><div><b>③ 학습</b><span>예측 → 정답과 비교 → 틀린 만큼 가중치를 조금씩 수정 (반복)</span></div><div><b>④ 평가</b><span>한 번도 못 본 시험용 그림으로 정확도 측정: <b>'+M.acc+'%</b></span></div><div><b>⑤ 활용</b><span>새로 그린 숫자를 인식 (새로운 데이터에 적용)</span></div></div>'+
+   '<h4>인공지능이 공부한 손글씨 데이터 (일부)</h4><div id="lm-ds"></div>'+
+   '<h4>숫자별 학습 데이터 수</h4><div class="tbl-wrap"><table><tr><th>숫자</th>'+[...Array(10).keys()].map(d=>'<th>'+d+'</th>').join('')+'</tr><tr><td>장수</td>'+M.counts.map(n=>'<td>'+f(n)+'</td>').join('')+'</tr></table></div>'+
+   '<h4>학습 기록: 반복할수록 똑똑해져요</h4>'+accSvg(170)+'<div class="tbl-wrap"><table><tr><th>반복(에포크)</th><th>오차(loss)</th><th>학습용 정답률</th><th>시험용 정답률</th></tr>'+M.log.map(l=>'<tr><td>'+l[0]+'</td><td>'+l[1].toFixed(3)+'</td><td>'+l[2].toFixed(1)+'%</td><td>'+l[3].toFixed(1)+'%</td></tr>').join('')+'</table></div>'+
+   '<p class="hint" style="margin-top:10px">학습용 정답률이 시험용보다 낮은 이유는 학습할 때 그림을 일부러 기울이고, 늘리고, 굵게 만들어(<b style="color:var(--accent)">데이터 증강</b>) 더 어려운 문제로 연습했기 때문이에요. 사람이 "7은 위에 가로선이 있고…" 같은 규칙을 직접 코딩하지 않았어요. 인공지능이 데이터를 보며 <b style="color:var(--accent)">'+f(784*64+64+64*32+32+32*10+10)+'개</b>의 가중치를 스스로 조정했어요. 이것이 <b style="color:var(--accent)">기계학습</b>이에요.</p>'+
+   '<h4>신경망 구조</h4><ul class="notes"><li><b>입력층 784개</b>: 28×28 픽셀의 밝기 값</li><li><b>은닉층1 64개 · 은닉층2 32개</b>: 입력에 가중치를 곱해 더하고(∑), 음수는 0으로 바꿔요(ReLU)</li><li><b>출력층 10개</b>: 0~9 각 숫자의 점수 → 소프트맥스로 확률(%) 변환</li></ul>';
+  const c=sampleCanvas(10,3);c.style.cssText='width:100%;max-width:560px;image-rendering:pixelated;border:1px solid var(--line)';$('#lm-ds').appendChild(c);m.hidden=false;m.querySelector('[data-close]').focus();}
 
 /* ================= 차시 화면 ================= */
 let CUR={lid:null,lv:0,qid:null,answered:false},mounted=null;
@@ -2042,7 +2174,7 @@ function renderLesson(lid,keepLv){
   const v=$('#v-lesson');v.style.setProperty('--uc','var(--'+u.c+')');
   v.innerHTML='<nav class="crumb"><a href="#home">수업 목록</a><span>›</span><span>'+u.no+'. '+u.title+'</span></nav>'+
    '<div class="lhead"><span class="eyebrow">LESSON '+no+'</span><h1><span class="n">'+no+'</span>'+L.title+'</h1><p>'+L.intro+'</p></div>'+
-   '<div class="levels" id="lvtabs"></div><div class="act hud" id="actbox"></div>'+
+   (THEORY[lid]?'<section class="theory-wrap"><div class="sec-h"><span class="eyebrow">THEORY · 기본 이론</span><h2>먼저 개념을 익혀요</h2><p>개념을 읽고 실생활 예시와 연결해 본 뒤, 아래 수준별 활동에 도전하세요.</p></div><div class="theory">'+THEORY[lid].map((t,i)=>'<article class="tcard hud"><span class="tn">CONCEPT 0'+(i+1)+'</span><h3>'+t[0]+'</h3><p>'+t[1]+'</p><div class="ex"><b>실생활 예시</b>'+t[2]+'</div></article>').join('')+'</div></section><div class="sec-h"><span class="eyebrow">PRACTICE · 수준별 활동</span><h2>직접 해 보며 익혀요</h2></div>':'')+'<div class="levels" id="lvtabs"></div><div class="act hud" id="actbox"></div>'+
    '<section class="mini hud"><div style="display:flex;flex-direction:column;gap:12px"><span class="eyebrow">MINI LESSON · 핵심 정리</span><h2>개념 다시 보기</h2><ul class="notes">'+L.notes.map(n=>'<li>'+n+'</li>').join('')+'</ul></div><div class="quiz" id="quizbox"></div></section>'+
    '<nav class="lnav">'+(prev?'<a href="#'+prev.id+'"><small>PREV</small>← '+prev.title+'</a>':'<span></span>')+(next?'<a href="#'+next.id+'" style="text-align:right"><small>NEXT</small>'+next.title+' →</a>':'<a href="#analysis" style="text-align:right"><small>FINISH</small>AI 분석실로 →</a>')+'</nav>';
   renderLvTabs();renderAct();renderQuiz(true);
