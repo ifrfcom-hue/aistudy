@@ -58,7 +58,9 @@ h1,h2,h3{text-wrap:balance}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%}
 .hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(3,8,18,.94) 0%,rgba(3,8,18,.62) 40%,rgba(3,8,18,0) 68%)}
 .hero-text{position:relative;z-index:1;padding:44px clamp(22px,4vw,54px);max-width:600px;display:flex;flex-direction:column;gap:16px}
-.hero h1{font-family:var(--f-body);font-weight:700;font-size:clamp(34px,5.4vw,60px);line-height:1.08;margin:0;letter-spacing:-.02em}
+.hero h1{font-family:var(--f-body);font-weight:700;font-size:clamp(26px,6vw,68px);line-height:1.1;margin:0;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 0 18px rgba(3,8,18,.9),0 0 4px rgba(3,8,18,.9)}
+.hero-text{max-width:none}
+.hero-text>p,.hero-text>.hud-line{max-width:560px}
 .glitch{position:relative;display:inline-block;color:var(--accent);text-shadow:0 0 22px rgba(0,229,255,.55)}
 .glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none}
 .glitch::before{color:var(--mag);transform:translate(2px,0);opacity:.55;clip-path:inset(0 0 55% 0);animation:gl1 3.2s infinite steps(1)}
@@ -2018,8 +2020,8 @@ function renderHome(){
   const v=$('#v-home');const p=prof();
   v.innerHTML='<div class="hero"><canvas id="cv-hero" aria-hidden="true"></canvas><div class="hero-text">'+
    '<span class="eyebrow">// NEURAL CORE ONLINE</span>'+
-   '<h1>라파샘의<br><span class="glitch" data-t="인기초">인기초</span> 실습실</h1>'+
-   '<p>인공지능 기초 5개 단원 21차시. 수준별 활동과 미니레슨으로 점수를 쌓고, AI 분석실에서 나의 강점과 약점을 확인하세요.</p>'+
+   '<h1>라파샘의 <span class="glitch" data-t="인기초">인기초</span> 실습실</h1>'+
+   '<p>인공지능 기초 5개 단원 '+LESSONS.length+'차시. 수준별 활동과 미니레슨으로 점수를 쌓고, AI 분석실에서 나의 강점과 약점을 확인하세요.</p>'+
    '<div class="hud-line">SYS <b>●</b> ACTIVE · UNITS 05 · LESSONS '+LESSONS.length+' · ACTIVITIES '+TOTAL_ACTS+' · QUIZ '+QB.length+'</div>'+
    '<div class="hero-cta"><a class="cta" href="#l1-1">첫 차시 시작하기</a><a class="cta ghost" href="#analysis">AI 분석실</a></div></div></div>'+
    UNITS.map(u=>{const ls=LESSONS.filter(l=>l.u===u.no);const us=unitStat(u.no);
